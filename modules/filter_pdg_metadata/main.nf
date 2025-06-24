@@ -1,6 +1,7 @@
 process FILTER_PDG_METADATA {
     tag "NCBI datasets"
     label "process_micro"
+    maxForks 5
 
     module (params.enable_module ? "${params.swmodulepath}${params.fs}perl${params.fs}5.30.0" : null)
     conda (params.enable_conda ? "conda-forge::perl conda-forge::coreutils bioconda::perl-bioperl=1.7.8" : null)
