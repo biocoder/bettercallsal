@@ -194,6 +194,8 @@ def main() -> None:
         logging.error("When -m is on, -ps and -gd are also required.")
         exit(1)
 
+    filter_these_hits = list()
+
     if skip_accs and not skip_check.match(skip_accs):
         logging.error(
             "Supplied bio project accessions are not valid!\n"
