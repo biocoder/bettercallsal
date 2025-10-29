@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-import yaml
 import platform
 import subprocess
 from textwrap import dedent
+
+import yaml
 
 
 def _make_versions_html(versions):
@@ -54,6 +55,8 @@ versions_this_module["${task.process}"] = {
     "python": platform.python_version(),
     "yaml": yaml.__version__,
 }
+
+subprocess.run("perl -i -p -e 's/(sourmash:).*\s(.+)/\$1 \$2/' $versions", shell=True)
 
 with open("$versions") as f:
     versions_by_process = yaml.load(f, Loader=yaml.BaseLoader)
