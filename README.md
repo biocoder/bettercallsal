@@ -2,9 +2,17 @@
 
 `bettercallsal` is an automated workflow to assign Salmonella serotype based on [NCBI Pathogen Detection](https://www.ncbi.nlm.nih.gov/pathogens) Project for [Salmonella](https://www.ncbi.nlm.nih.gov/pathogens/isolates/#taxgroup_name:%22Salmonella%20enterica%22). It uses `MASH` to reduce the search space followed by additional genome filtering with `sourmash`. It then performs genome based alignment with `kma` followed by count generation using `salmon`. This workflow can be used to analyze shotgun metagenomics datasets, quasi-metagenomic datasets (enriched for Salmonella) and target enriched datasets (enriched with molecular baits specific for Salmonella) and is especially useful in a case where a sample is of multi-serovar mixture.
 
-`bettercallsal` works on both **Illumina** short reads and **Oxford Nanopore** long reads.
+`bettercallsal` works on both **Illumina** short reads and **Oxford Nanopore** long reads. It also works on both **WGS** and **MGS** datasets.
 
 It is written in **Nextflow** and is part of the modular data analysis pipelines (**CFSAN PIPELINES** or **CPIPES** for short) at **CFSAN**.
+
+\
+&nbsp;
+
+## Software Information
+
+* The latest release version is **`v1.1.0`**.
+* [See the full changelog](https://github.com/CFSAN-Biostatistics/bettercallsal/releases).
 
 \
 &nbsp;
@@ -37,13 +45,13 @@ This work is published in [Frontiers in Microbiology](https://www.frontiersin.or
 
 ---
 
-- The main workflow has been used for **research purposes** only.
-- Analysis results should be interpreted with caution and should be treated as suspect, as the pipeline is dependent on the precision of metadata from the **NCBI Pathogen Detection** project for the `per_snp_cluster` and `per_computed_serotype` databases.
-- Internal research with simulated datasets suggests that the `bettercallsal` workflow is more accurate with increased read depth.
-  - For Illumina MiSeq, at least 5 million read pairs (2x300 PE) or 10 million reads (1x300 SE) per sample works well.
-  - For Illumina NextSeq and NovaSeq, around 10 million read pairs (2x150 PE) or 20 million reads (1x150 SE) per sample works well.
-  - That being said, it is not a hard-cutoff and you can still try the workflow on low read-depth samples.
-- **No genome hit** assignment should be interpreted with caution.
+* The main workflow has been used for **research purposes** only.
+* Analysis results should be interpreted with caution and should be treated as suspect, as the pipeline is dependent on the precision of metadata from the **NCBI Pathogen Detection** project for the `per_snp_cluster` and `per_computed_serotype` databases.
+* Internal research with simulated datasets suggests that the `bettercallsal` workflow is more accurate with increased read depth.
+  * For Illumina MiSeq, at least 5 million read pairs (2x300 PE) or 10 million reads (1x300 SE) per sample works well.
+  * For Illumina NextSeq and NovaSeq, around 10 million read pairs (2x150 PE) or 20 million reads (1x150 SE) per sample works well.
+  * That being said, it is not a hard-cutoff and you can still try the workflow on low read-depth samples.
+* **No genome hit** assignment should be interpreted with caution.
 
 \
 &nbsp;

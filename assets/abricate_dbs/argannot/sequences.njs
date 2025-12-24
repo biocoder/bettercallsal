@@ -6,7 +6,7 @@
   "description": "argannot",
   "number-of-letters": 2023212,
   "number-of-sequences": 2224,
-  "last-updated": "2025-06-03T16:09:00",
+  "last-updated": "2025-12-24T10:45:00",
   "number-of-volumes": 1,
   "bytes-total": 926811,
   "bytes-to-cache": 534303,

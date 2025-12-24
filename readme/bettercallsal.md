@@ -9,8 +9,9 @@
 
 - [Minimum Requirements](#minimum-requirements)
 - [CFSAN GalaxyTrakr](#cfsan-galaxytrakr)
+- [Database](#database)
+- [WGS or MGS](#wgs-or-mgs)
 - [Usage and Examples](#usage-and-examples)
-  - [Database](#database)
   - [Input](#input)
   - [Output](#output)
   - [Computational resources](#computational-resources)
@@ -30,19 +31,19 @@
 
 ## Minimum Requirements
 
-1. [Nextflow version 24.04.3](https://github.com/nextflow-io/nextflow/releases/download/v24.04.3/nextflow).
+1. [Nextflow version 25.10.2](https://github.com/nextflow-io/nextflow/releases/download/v25.10.2/nextflow).
     - Make the `nextflow` binary executable (`chmod 755 nextflow`) and also make sure that it is made available in your `$PATH`.
     - If your existing `JAVA` install does not support the newest **Nextflow** version, you can try **Amazon**'s `JAVA` (OpenJDK):  [Corretto](https://docs.aws.amazon.com/corretto/latest/corretto-21-ug/downloads-list.html).
-2. Either of `micromamba` (version `1.5.9`) or `docker` or `singularity` installed and made available in your `$PATH`.
+2. Either of `micromamba` or `docker` or `singularity` installed and made available in your `$PATH`.
     - Running the workflow via `micromamba` software provisioning is **preferred** as it does not require any `sudo` or `admin` privileges or any other configurations with respect to the various container providers.
     - To install `micromamba` for your system type, please follow these [installation steps](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html#linux-and-macos) and make sure that the `micromamba` binary is made available in your `$PATH`.
     - Just the `curl` step is sufficient to download the binary as far as running the workflows are concerned.
-    - Once you have finished the installation, **it is important that you downgrade `micromamba` to version `1.5.9`**.
-    - First check, if your version is other than `1.5.9` and if not, do the downgrade.
+    - Once you have finished the installation, **it is important that you upgrade `micromamba` to at least version `2.3.2` or greater**.
+    - First check, if your version is less than `2.3.2`, if not, do the upgrade.
 
         ```bash
         micromamba --version
-        micromamba self-update --version 1.5.9 -c conda-forge
+        micromamba self-update -c conda-forge
         ```
 
 3. Minimum of 10 CPU cores and about 16 GBs for main workflow steps. More memory may be required if your **FASTQ** files are big.
@@ -56,6 +57,28 @@ The `bettercallsal` pipeline is also available for use on the [Galaxy instance s
 [from this PDF](https://research.foodsafetyrisk.org/bettercallsal/galaxytrakr/bettercallsal_on_cfsan_galaxytrakr.pdf).
 
 Please note that the pipeline on [CFSAN GalaxyTrakr](https://galaxytrakr.org) in most cases may be a version older than the one on **GitHub** due to testing prioritization.
+
+\
+&nbsp;
+
+## WGS or MGS
+
+Starting with **`v1.1.0`**, `bettercallsal` works with both Whole-Genome Sequencing (**WGS**) or Metagenomic Sequencing (**MGS**) datasets. By default, `bettercallsal` assumes the input datasets are from **MGS**. Add command-line option `--input-is-wgs true` to trigger **WGS** specific workflows for both `bettercallsal` and `bettercallsal_lr` pipelines.
+
+\
+&nbsp;
+
+## Database
+
+The successful run of the workflow requires certain database flat files specific for the workflow.
+
+Please refer to `bettercallsal_db` [README](./bettercallsal_db.md) if you would like to run the workflow on the latest version of the **PDG** release. However, please note that due to recent changes made to NCBI Datasets API rate limits, the `bettercallsal_db` pipeline takes unusually longer to finish running and as such new databases will be released here as we build them.
+
+- Download latest `bettercallsal` database build:
+  - [PDG000000002.3793](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.3793.tar.gz)
+- Other earlier builds:
+  - [PDG000000002.3082](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.3082.tar.gz)
+  - [PDG000000002.2727](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.2727.tar.gz)
 
 \
 &nbsp;
@@ -113,16 +136,6 @@ cpipes \
 ```
 
 \
-&nbsp;
-
-### Database
-
----
-
-The successful run of the workflow requires certain database flat files specific for the workflow.
-
-Please refer to `bettercallsal_db` [README](./bettercallsal_db.md) if you would like to run the workflow on the latest version of the **PDG** release.
-
 &nbsp;
 
 ### Input
@@ -284,7 +297,7 @@ After you make sure that you have all the [minimum requirements](#minimum-requir
 
 - Download simulated reads: [S3](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/bettercallsal_sim_reads.tar.bz2) (~ 3 GB).
 - Download pre-formatted test database: [S3](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.2491.test-db.tar.bz2) (~ 75 MB). This test database works only with the simulated reads.
-- Download pre-formatted full database (**Optional**): If you would like to do a complete run with your own **FASTQ** datasets, you can either create your own [database](./bettercallsal_db.md) or use [PDG000000002.3082](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.3082.tar.gz) version of the database (~ 48 GB).
+- Download pre-formatted full database (**Optional**): If you would like to do a complete run with your own **FASTQ** datasets, you can either create your own [database](./bettercallsal_db.md) or use [PDG000000002.3793](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/PDG000000002.3793.tar.gz) version of the database (~ 48 GB).
 - After succesful run of the workflow, your **MultiQC** report should look something like [this](https://cfsan-pub-xfer.s3.amazonaws.com/Kranti.Konganti/bettercallsal/bettercallsal_sim_reads_mqc.html).
 - It is always a best practice to use absolute UNIX paths and real destinations of symbolic links during pipeline execution. For example, find out the real path(s) of your absolute UNIX path(s) and use that for the `--input` and `--output` options of the pipeline.
 
@@ -327,9 +340,9 @@ You can turn **OFF** this feature with `--sourmashsketch_run false` option.
 ```text
 [Kranti_Konganti@my-unix-box ]$ cpipes --pipeline bettercallsal --help
 
- N E X T F L O W   ~  version 24.04.3
+N E X T F L O W   ~  version 25.10.2
 
-Launching `~/apps/bettercallsal/1.0.0/cpipes` [loving_curry] DSL2 - revision: d9b4be42be
+Launching `~/apps/bettercallsal/1.1.0/cpipes` [peaceful_hirsch] DSL2 - revision: d9b4be42be
 
 ================================================================================
              (o)                  
@@ -367,12 +380,12 @@ Ex: cpipes --pipeline bettercallsal --help fastp,mash
 --help sfhpy                    : Show sourmash_filter_hits.py CLI options
 --help kmaindex                 : Show kma `index` CLI options
 --help kmaalign                 : Show kma CLI options
+--help skesa                    : Show SKESA CLI options
 --help megahit                  : Show megahit CLI options
 --help mlst                     : Show mlst CLI options
 --help abricate                 : Show abricate CLI options
 --help salmon                   : Show salmon `index` CLI options
 --help gsrpy                    : Show gen_salmon_res_table.py CLI options
-
 ```
 
 \
@@ -383,9 +396,9 @@ Ex: cpipes --pipeline bettercallsal --help fastp,mash
 ```text
 [Kranti_Konganti@my-unix-box ]$ cpipes --pipeline bettercallsal_lr --help
 
- N E X T F L O W   ~  version 24.04.3
+N E X T F L O W   ~  version 25.10.2
 
-Launching `~/apps/bettercallsal/1.0.0/cpipes` [friendly_sax] DSL2 - revision: d9b4be42be
+Launching `~/apps/bettercallsal/1.1.0/cpipes` [friendly_sax] DSL2 - revision: d9b4be42be
 
 ================================================================================
              (o)                  

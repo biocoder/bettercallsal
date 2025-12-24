@@ -15,7 +15,9 @@ from collections import defaultdict
 
 
 # Multiple inheritence for pretty printing of help text.
-class MultiArgFormatClasses(argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter):
+class MultiArgFormatClasses(
+    argparse.RawTextHelpFormatter, argparse.ArgumentDefaultsHelpFormatter
+):
     pass
 
 
@@ -44,7 +46,11 @@ def main() -> None:
 
     # Set logging.
     logging.basicConfig(
-        format="\n" + "=" * 55 + "\n%(asctime)s - %(levelname)s\n" + "=" * 55 + "\n%(message)s\n\n",
+        format="\n"
+        + "=" * 55
+        + "\n%(asctime)s - %(levelname)s\n"
+        + "=" * 55
+        + "\n%(message)s\n\n",
         level=logging.DEBUG,
     )
 
@@ -205,7 +211,9 @@ def main() -> None:
     elif skip_check.match(skip_accs):
         datasets_cmd = "datasets summary genome accession --as-json-lines --report ids_only".split()
         datasets_cmd.append(skip_accs)
-        dataformat_cmd = "dataformat tsv genome --fields accession --elide-header".split()
+        dataformat_cmd = (
+            "dataformat tsv genome --fields accession --elide-header".split()
+        )
         try:
             accs_query = subprocess.run(datasets_cmd, capture_output=True, check=True)
             try:
@@ -215,7 +223,9 @@ def main() -> None:
                     .split("\n")
                 )
             except subprocess.CalledProcessError as e:
-                logging.error(f"Query failed\n\t{dataformat_cmd.join(' ')}\nError:\n\t{e}")
+                logging.error(
+                    f"Query failed\n\t{dataformat_cmd.join(' ')}\nError:\n\t{e}"
+                )
                 exit(1)
         except subprocess.CalledProcessError as e:
             logging.error(f"Query failed\n\t{datasets_cmd.join(' ')}\nError:\n\t{e}")
@@ -290,7 +300,9 @@ def main() -> None:
         sero_snp_meta.close()
         write_pickled_sero.close()
         exit(0)
-    elif pickle_sero and not (os.path.exists(pickle_sero) and os.path.getsize(pickle_sero) > 0):
+    elif pickle_sero and not (
+        os.path.exists(pickle_sero) and os.path.getsize(pickle_sero) > 0
+    ):
         logging.error(
             "Requested to create pickle from metadata, but\n"
             + f"the file, {os.path.basename(pickle_sero)} is empty or\ndoes not exist!"
@@ -319,7 +331,11 @@ def main() -> None:
                     mash_hit_acc = re.sub(
                         genomes_dir_suffix,
                         "",
-                        str((re.search(r"GC[AF].*?" + genomes_dir_suffix, cols[4])).group()),
+                        str(
+                            (
+                                re.search(r"GC[AF].*?" + genomes_dir_suffix, cols[4])
+                            ).group()
+                        ),
                     )
 
                     if mash_hit_acc:
@@ -332,7 +348,9 @@ def main() -> None:
                         exit(1)
             msh_res.close()
         elif os.path.getsize(mash_screen_res) == 0:
-            failed_sample_name = os.path.basename(mash_screen_res).rstrip(mash_screen_res_suffix)
+            failed_sample_name = os.path.basename(mash_screen_res).rstrip(
+                mash_screen_res_suffix
+            )
             with open(
                 os.path.join(os.getcwd(), "_".join([out_prefix, "FAILED.txt"])), "w"
             ) as failed_sample_fh:
@@ -346,7 +364,9 @@ def main() -> None:
         wrote_header_acc = False
 
         with open(mash_genomes_gz, "wb") as msh_out_gz:
-            for _, (ident, acc_list) in enumerate(sorted(mash_hits.items(), reverse=True)):
+            for _, (ident, acc_list) in enumerate(
+                sorted(mash_hits.items(), reverse=True)
+            ):
                 for acc in acc_list:
                     if len(filter_these_hits) > 0 and acc in filter_these_hits:
                         continue
@@ -356,7 +376,9 @@ def main() -> None:
                         if target_acc_key in unpickled_acc2serotype[acc].keys():
                             if not wrote_header_pop:
                                 mash_out_pop_txt = open(mash_popup_info_txt, "w")
-                                mash_out_pop_txt.write("POPUP_INFO\nSEPARATOR COMMA\nDATA\n")
+                                mash_out_pop_txt.write(
+                                    "POPUP_INFO\nSEPARATOR COMMA\nDATA\n"
+                                )
                                 wrote_header_pop = True
 
                             pdt = "".join(unpickled_acc2serotype[acc][target_acc_key])
@@ -371,11 +393,14 @@ def main() -> None:
                             mash_out_pop_txt.write(popup_line + "\n")
 
                         if all(
-                            k in unpickled_acc2serotype[acc].keys() for k in req_metadata.keys()
+                            k in unpickled_acc2serotype[acc].keys()
+                            for k in req_metadata.keys()
                         ):
                             if not wrote_header_acc:
                                 msh_out_accs_txt = open(mash_uniq_accs_txt, "w")
-                                msh_out_txt.write("METADATA\nSEPARATOR COMMA\nFIELD_LABELS,")
+                                msh_out_txt.write(
+                                    "METADATA\nSEPARATOR COMMA\nFIELD_LABELS,"
+                                )
                                 msh_out_txt.write(
                                     f"{','.join([str(key).upper() for key in req_metadata.keys()])}\nDATA\n"
                                 )

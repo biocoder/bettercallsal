@@ -19,6 +19,7 @@ include { sourmashsearchHelp   } from "${params.toolshelp}${params.fs}sourmashse
 include { sfhpyHelp            } from "${params.toolshelp}${params.fs}sfhpy"
 include { kmaindexHelp         } from "${params.toolshelp}${params.fs}kmaindex"
 include { kmaalignHelp         } from "${params.toolshelp}${params.fs}kmaalign"
+include { skesaHelp            } from "${params.toolshelp}${params.fs}skesa"
 include { megahitHelp          } from "${params.toolshelp}${params.fs}megahit"
 include { mlstHelp             } from "${params.toolshelp}${params.fs}mlst"
 include { abricateHelp         } from "${params.toolshelp}${params.fs}abricate"
@@ -46,6 +47,7 @@ include { SOURMASH_SEARCH         } from "${params.modules}${params.fs}sourmash$
 include { KMA_INDEX               } from "${params.modules}${params.fs}kma${params.fs}index${params.fs}main"
 include { KMA_ALIGN               } from "${params.modules}${params.fs}kma${params.fs}align${params.fs}main"
 include { OTF_GENOME              } from "${params.modules}${params.fs}otf_genome${params.fs}main"
+include { SKESA_ASSEMBLE          } from "${params.modules}${params.fs}skesa${params.fs}assemble${params.fs}main"
 include { MEGAHIT_ASSEMBLE        } from "${params.modules}${params.fs}megahit${params.fs}assemble${params.fs}main"
 include { MLST                    } from "${params.modules}${params.fs}mlst${params.fs}main"
 include { ABRICATE_RUN            } from "${params.modules}${params.fs}abricate${params.fs}run${params.fs}main"
@@ -157,7 +159,22 @@ workflow BETTERCALLSAL {
                 .set { software_versions }
         }
 
+        if (params.skesa_run) {
+
+            SKESA_ASSEMBLE( ch_processed_reads )
+
+            SKESA_ASSEMBLE
+                    .out
+                    .assembly
+                    .set { ch_asm_filtered_contigs }
+
+                software_versions
+                    .mix ( SKESA_ASSEMBLE.out.versions.ifEmpty(null) )
+                    .set { software_versions }
+        }
+
         if (params.bcs_concat_pe && !params.fq_single_end && !params.bbmerge_run) {
+
             CAT_CAT ( ch_processed_reads )
 
             CAT_CAT
@@ -305,6 +322,13 @@ workflow BETTERCALLSAL {
                     .assembly
                     .set { ch_asm_filtered_contigs }
 
+                software_versions
+                    .mix ( MEGAHIT_ASSEMBLE.out.versions.ifEmpty(null) )
+                    .set { software_versions }
+            }
+
+            if (params.skesa_run || params.megahit_run) {
+
                 MLST ( ch_asm_filtered_contigs )
 
                 MLST.out.tsv
@@ -347,7 +371,6 @@ workflow BETTERCALLSAL {
 
                 software_versions
                     .mix (
-                        MEGAHIT_ASSEMBLE.out.versions.ifEmpty(null),
                         MLST.out.versions.ifEmpty(null),
                         ABRICATE_RUN.out.versions.ifEmpty(null),
                         ABRICATE_SUMMARY.out.versions.ifEmpty(null),
@@ -467,6 +490,7 @@ def help() {
         '--help sfhpy'            : 'Show sourmash_filter_hits.py CLI options',
         '--help kmaindex'         : 'Show kma `index` CLI options',
         '--help kmaalign'         : 'Show kma CLI options',
+        '--help skesa'            : 'Show SKESA CLI options',
         '--help megahit'          : 'Show megahit CLI options',
         '--help mlst'             : 'Show mlst CLI options',
         '--help abricate'         : 'Show abricate CLI options',
@@ -506,6 +530,7 @@ def help() {
             (uHelp =~ /(?i)\bsfhpy/ ? sfhpyHelp(params).text : nH) +
             (uHelp =~ /(?i)\bkmaindex/ ? kmaindexHelp(params).text : nH) +
             (uHelp =~ /(?i)\bkmaalign/ ? kmaalignHelp(params).text : nH) +
+            (uHelp =~ /(?i)\bskesa/ ? skesaHelp(params).text : nH) +
             (uHelp =~ /(?i)\bmegahit/ ? megahitHelp(params).text : nH) +
             (uHelp =~ /(?i)\bmlst/ ? mlstHelp(params).text : nH) +
             (uHelp =~ /(?i)\babricate/ ? abricateHelp(params).text : nH) +
